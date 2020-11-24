@@ -51,6 +51,7 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", (event) => {
+    console.log(event);
   //handle api caching
   if (event.request.url.includes("/api")) {
     return event.respondWith(
@@ -59,7 +60,7 @@ self.addEventListener("fetch", (event) => {
         .then(cache => {
           return fetch(event.request)
             .then(response => {
-              if (response.status = 200) {
+              if (response.status === 200) {
                 cache.put(event.request.url, response.clone());
               }
 
@@ -72,4 +73,13 @@ self.addEventListener("fetch", (event) => {
         .catch(error => console.log("error fetching api: : ", error))
     );
   }
+
+  event.respondWith(
+      caches    
+        .match(event.request) 
+        .then(response => {
+            return response || fetch(event.request);
+        })
+        .catch(error => console.log(error))
+  )
 });
