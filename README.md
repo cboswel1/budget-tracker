@@ -1,8 +1,5 @@
 # budget-tracker
 
-# workout-tracker 
-
-
 ![](https://img.shields.io/badge/license-MIT-yellow)
 ![node-current](https://img.shields.io/node/v/c?color=gr)
 [![npm](https://img.shields.io/npm/v/npm?color=blue&logo=npm)](https://www.npmjs.com/package/inquirer)
