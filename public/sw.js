@@ -1,5 +1,3 @@
-console.log("Reached SW");
-
 const appCache = "file-v2";
 const dataCacheName = "data-v1";
 
@@ -15,7 +13,6 @@ const cacheFiles = [
 ];
 
 self.addEventListener("install", event => {
-  console.log("hit install");
 
   event.waitUntil(
     caches
@@ -29,7 +26,6 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("activate", event => {
-  console.log("hit activation");
 
   event.waitUntil(
     caches
@@ -50,8 +46,7 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-self.addEventListener("fetch", (event) => {
-    console.log(event);
+self.addEventListener("fetch", event => {
   //handle api caching
   if (event.request.url.includes("/api")) {
     return event.respondWith(
@@ -75,11 +70,32 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-      caches    
-        .match(event.request) 
-        .then(response => {
-            return response || fetch(event.request);
-        })
-        .catch(error => console.log(error))
-  )
+    caches
+      .match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+
+        return fetch(event.request).then(response => {
+          if (!response || !response.basic || !response.status !== 200) {
+            console.log("fetch response: ", response);
+            return response;
+          }
+
+          // response is a stream, reading will consume the response
+          const responseToCache = response.clone();
+
+          caches
+            .open(cacheName)
+            .then(cache => {
+              cache.put(event.request, responseToCache);
+            })
+            .catch(error => console.log(error));
+
+          return response;
+        });
+      })
+      .catch(error => console.log("error"))
+  );
 });
