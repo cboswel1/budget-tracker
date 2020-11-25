@@ -28,7 +28,7 @@ This repository can be cloned from Github.com/cboswel1/budget-tracker. You must 
   
 
 ## Preview 
-![]()
+![](https://github.com/cboswel1/budget-tracker/blob/main/public/assets/images/budgetapp.gif?raw=true)
 
 
 
